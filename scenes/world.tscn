@@ -1,0 +1,28 @@
+[gd_scene load_steps=8 format=3 uid="uid://ddq754anwjs4b"]
+
+[ext_resource type="Script" path="res://scenes/world.cs" id="1_0g7cr"]
+[ext_resource type="Shader" path="res://shader/RobotPaint.gdshader" id="3_4qfyh"]
+[ext_resource type="Script" path="res://scenes/RobotPaintTexture.cs" id="3_ahom0"]
+[ext_resource type="Texture2D" uid="uid://bs1lahas0fdej" path="res://textures/metal_floor.png" id="4_si4fp"]
+[ext_resource type="PackedScene" uid="uid://c4p31po0y51iy" path="res://scenes/Enemy.tscn" id="5_qdasx"]
+[ext_resource type="PackedScene" uid="uid://bfohanoyo356q" path="res://scenes/Player.tscn" id="6_oxeg2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rwffp"]
+shader = ExtResource("3_4qfyh")
+shader_parameter/highlight_colour = Color(0.890196, 0.901961, 1, 1)
+shader_parameter/metal_floor_tex = ExtResource("4_si4fp")
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_0g7cr")
+
+[node name="RobotPaintTexture" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_rwffp")
+position = Vector2(180, 91)
+z_index = -1
+script = ExtResource("3_ahom0")
+
+[node name="Enemy" parent="." instance=ExtResource("5_qdasx")]
+position = Vector2(214, 105)
+
+[node name="Player" parent="." instance=ExtResource("6_oxeg2")]
+position = Vector2(180, 91)
