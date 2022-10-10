@@ -49,7 +49,7 @@ namespace TenSecs
         {
             RobotPaintTexture.instance = this;
             ResetImage();
-			imgMutex.Unlock();
+            imgMutex.Unlock();
         }
 
         public override void _Process(float delta)
@@ -57,7 +57,7 @@ namespace TenSecs
             base._Process(delta);
 
             imgMutex.Lock();
-			img.Lock();
+            img.Lock();
 
             foreach (Vector2 pixel in pixelQueue)
             {
@@ -166,7 +166,6 @@ namespace TenSecs
             imgMutex.Unlock();
 
             PaintAmount = ((float)count) / ((float)PixelCount);
-
         }
     }
 }

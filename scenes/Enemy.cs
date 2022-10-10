@@ -4,6 +4,9 @@ namespace TenSecs
 {
     public class Enemy : KinematicBody2D
     {
+        [Signal]
+        public delegate void Dying();
+
         protected Vector2 inputDir = Vector2.Zero;
         [Export]
         protected float acceleration = 20f;
@@ -20,6 +23,10 @@ namespace TenSecs
         private ShaderMaterial shaderMaterial;
         private Shaker shaker;
 
+        [Export]
+        public int MaxHealth { get; set; } = 1;
+        public int CurrentHealth { get; set; }
+
         public bool CanAttack { get; set; } = true;
 
         public override void _Ready()
@@ -29,6 +36,7 @@ namespace TenSecs
             sprite = GetNode<AnimatedSprite>("AnimatedSprite");
             shaderMaterial = (ShaderMaterial)sprite.Material;
             shaker = GetNode<Shaker>("Shaker");
+            CurrentHealth = MaxHealth;
         }
 
         public override void _Process(float delta)
@@ -96,7 +104,7 @@ namespace TenSecs
             externalVelocity += impulse;
         }
 
-        public void Hit()
+        public void Hit(int damage)
         {
             SceneTreeTween hitTween = GetTree().CreateTween();
             hitTween.TweenProperty(shaderMaterial, "shader_param/flash_lerp", 1.25f, .06f);
@@ -104,6 +112,24 @@ namespace TenSecs
             ret.SetDelay(.06f);
             hitTween.Play();
             shaker.Shake(.8f);
+            TakeDamage(damage);
+        }
+
+        private void TakeDamage(int damage)
+        {
+            CurrentHealth -= damage;
+
+            if (CurrentHealth <= 0)
+            {
+                Die();
+            }
+        }
+
+        private void Die()
+        {
+            EmitSignal(nameof(Dying));
+
+            QueueFree();
         }
 
         public void JustAttacked()

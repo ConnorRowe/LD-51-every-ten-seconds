@@ -1,14 +1,16 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://textures/2x2white.png" type="Texture" id=1]
 [ext_resource path="res://scenes/RobotPaintTexture.cs" type="Script" id=2]
 [ext_resource path="res://scenes/Arena.cs" type="Script" id=3]
-[ext_resource path="res://scenes/Enemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=5]
 [ext_resource path="res://font/Normal.tres" type="DynamicFont" id=6]
 [ext_resource path="res://shader/RobotPaint.gdshader" type="Shader" id=7]
 [ext_resource path="res://textures/metal_floor.png" type="Texture" id=8]
 [ext_resource path="res://scenes/Crystal.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/TowerQueue.tscn" type="PackedScene" id=10]
+[ext_resource path="res://textures/robot_paint_bar_fill.png" type="Texture" id=11]
+[ext_resource path="res://textures/robot_paint_bar_bg.png" type="Texture" id=12]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 7 )
@@ -24,8 +26,8 @@ script = ExtResource( 3 )
 
 [node name="GrassBG" type="Sprite" parent="."]
 modulate = Color( 0.101961, 0.478431, 0.243137, 1 )
-position = Vector2( 179.5, 89.5 )
-scale = Vector2( 180.5, 90.5 )
+position = Vector2( 180, 90 )
+scale = Vector2( 180, 90 )
 z_index = -4096
 texture = ExtResource( 1 )
 
@@ -35,38 +37,48 @@ position = Vector2( 180, 90 )
 z_index = -4095
 script = ExtResource( 2 )
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
-margin_left = 55.0
-margin_right = 305.0
-margin_bottom = 21.0
-custom_fonts/font = ExtResource( 6 )
+[node name="ProgressBar" type="TextureProgress" parent="."]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 75.0
+margin_bottom = 9.0
 max_value = 1.0
 step = 0.0
+texture_under = ExtResource( 12 )
+texture_progress = ExtResource( 11 )
+nine_patch_stretch = true
+stretch_margin_left = 3
+stretch_margin_top = 3
+stretch_margin_right = 3
+stretch_margin_bottom = 3
 
 [node name="Player" parent="." instance=ExtResource( 5 )]
 position = Vector2( 179, 97 )
 
-[node name="Enemy" parent="." instance=ExtResource( 4 )]
-position = Vector2( 59, 88 )
-
-[node name="Enemy2" parent="." instance=ExtResource( 4 )]
-position = Vector2( 84, 163 )
-
-[node name="Enemy3" parent="." instance=ExtResource( 4 )]
-position = Vector2( 295, 164 )
-
-[node name="Enemy4" parent="." instance=ExtResource( 4 )]
-position = Vector2( 337, 94 )
-
 [node name="FPSLabel" type="Label" parent="."]
-margin_top = 166.0
+margin_top = 172.0
 margin_right = 40.0
-margin_bottom = 182.0
+margin_bottom = 188.0
 custom_fonts/font = ExtResource( 6 )
 text = "60"
 
-[node name="Timer" type="Timer" parent="."]
+[node name="CheckPaintTimer" type="Timer" parent="."]
 wait_time = 0.5
+autostart = true
 
 [node name="Crystal" parent="." instance=ExtResource( 9 )]
 position = Vector2( 180, 58 )
+
+[node name="EveryTenSeconds" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
+[node name="TowerQueue" parent="." instance=ExtResource( 10 )]
+position = Vector2( 360, 0 )
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+visible = false
+collision_layer = 5
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bounds"]
+polygon = PoolVector2Array( 0, 0, 0, 180, 360, 180, 360, 0, 0, 0, 0, -11, 371, -10, 372, 192, -13, 193, -13, -11, 0, -11 )

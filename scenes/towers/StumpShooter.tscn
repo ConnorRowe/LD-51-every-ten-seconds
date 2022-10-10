@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/towers/BaseTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://shader/HFrames.gdshader" type="Shader" id=2]
+[ext_resource path="res://textures/stump_shooter.png" type="Texture" id=3]
+[ext_resource path="res://textures/stump.png" type="Texture" id=4]
+[ext_resource path="res://scenes/towers/StumpShooter.cs" type="Script" id=5]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 2 )
+shader_param/maxFrames = 4.0
+shader_param/frame = 0
+
+[node name="StumpShooter" instance=ExtResource( 1 )]
+script = ExtResource( 5 )
+
+[node name="Shaker" parent="." index="2"]
+targetNode2DPath = NodePath("../Stump/ShooterAnchor")
+
+[node name="Stump" type="Sprite" parent="." index="4"]
+texture = ExtResource( 4 )
+
+[node name="ShooterAnchor" type="Node2D" parent="Stump" index="0"]
+
+[node name="Shooter" type="Sprite" parent="Stump/ShooterAnchor" index="0"]
+material = SubResource( 1 )
+position = Vector2( 0, -3 )
+texture = ExtResource( 3 )
+offset = Vector2( 0, 4 )
+
+[node name="CheckEnemiesTimer" type="Timer" parent="." index="5"]
+wait_time = 0.25
+autostart = true

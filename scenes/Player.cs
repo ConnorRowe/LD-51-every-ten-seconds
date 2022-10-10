@@ -102,7 +102,7 @@ namespace TenSecs
                     if (((Godot.Collections.Dictionary)dict)["collider"] is Node node && node.Owner is Enemy enemy)
                     {
                         enemy.AddExternalImpulse(Position.DirectionTo(enemy.Position) * 500f);
-						enemy.Hit();
+						enemy.Hit(0);
                     }
                 }
 

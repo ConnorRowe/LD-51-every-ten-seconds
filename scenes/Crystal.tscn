@@ -5,7 +5,7 @@
 [ext_resource path="res://scenes/Crystal.cs" type="Script" id=3]
 [ext_resource path="res://textures/sparkle.png" type="Texture" id=4]
 [ext_resource path="res://textures/2x2white.png" type="Texture" id=5]
-[ext_resource path="res://scenes/DynamicPixelShadow.gdshader" type="Shader" id=6]
+[ext_resource path="res://shader/DynamicPixelShadow.gdshader" type="Shader" id=6]
 [ext_resource path="res://shader/HFrames.gdshader" type="Shader" id=7]
 [ext_resource path="res://font/Normal.tres" type="DynamicFont" id=8]
 
@@ -19,7 +19,7 @@ shader_param/scale = 1.0
 [sub_resource type="ShaderMaterial" id=7]
 shader = ExtResource( 7 )
 shader_param/maxFrames = 5.0
-shader_param/frame = 0.0
+shader_param/frame = 0
 
 [sub_resource type="CanvasItemMaterial" id=3]
 particles_animation = true
