@@ -7,6 +7,8 @@ namespace TenSecs
         public static Arena INSTANCE { get; private set; }
         public static RandomNumberGenerator RNG = new RandomNumberGenerator();
         private static PackedScene enemyScene = GD.Load<PackedScene>("res://scenes/Enemy.tscn");
+        private static PackedScene smokeParticlesScene = GD.Load<PackedScene>("res://scenes/SmokeParticles.tscn");
+        private static PackedScene enemyParticlesScene = GD.Load<PackedScene>("res://scenes/EnemyDeathParticles.tscn");
         [Signal]
         public delegate void EveryTenSeconds();
         static Arena()
@@ -21,10 +23,11 @@ namespace TenSecs
         private Label fpsLabel;
         private Godot.Semaphore paintSemaphore = new Semaphore();
         private TowerQueue towerQueue;
-        private float spawnEnemyTime = 1f;
+        private float spawnEnemyTime = 2.5f;
         private float currentSpawnCD = 0;
         private float spawnAngle = 0f;
         private Vector2 centrePoint = new Vector2(180, 90);
+        private float timeElapsed = 0f;
 
 
         public override void _Ready()
@@ -56,11 +59,13 @@ namespace TenSecs
             currentSpawnCD += delta;
 
             fpsLabel.Text = Engine.GetFramesPerSecond().ToString();
+
+            timeElapsed += delta;
         }
 
         public override void _PhysicsProcess(float delta)
         {
-            if (currentSpawnCD >= spawnEnemyTime)
+            if (currentSpawnCD >= Mathf.Clamp(spawnEnemyTime * (1f - (timeElapsed / 500)), .25f, 2.5f))
             {
                 currentSpawnCD = 0;
 
@@ -103,7 +108,28 @@ namespace TenSecs
             Enemy enemy = enemyScene.Instance<Enemy>();
             AddChild(enemy);
             enemy.Position = position;
+
+            int enemyHealth = Mathf.Clamp(RNG.RandiRange(1, Mathf.RoundToInt(5f / (timeElapsed / 30))) * Mathf.RoundToInt(timeElapsed / 90), 1, 5);
+
+            enemy.CurrentHealth = enemyHealth;
         }
 
+        private static void MakeParticles(PackedScene particlesScene, Vector2 position)
+        {
+            SmokeParticles smoke = particlesScene.Instance<SmokeParticles>();
+            INSTANCE.AddChild(smoke);
+            smoke.ZIndex = (int)position.y;
+            smoke.GlobalPosition = position;
+        }
+
+        public static void MakeSmokeParticles(Vector2 position)
+        {
+            MakeParticles(smokeParticlesScene, position);
+        }
+
+        public static void MakeEnemyDeathParticles(Vector2 position)
+        {
+            MakeParticles(enemyParticlesScene, position);
+        }
     }
 }

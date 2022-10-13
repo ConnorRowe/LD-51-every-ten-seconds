@@ -7,6 +7,8 @@ namespace TenSecs
         [Signal]
         public delegate void Dying();
 
+        private float[] healthHueShifts = new float[5] { .385f, 0f, .793f, .349f, .582f };
+
         protected Vector2 inputDir = Vector2.Zero;
         [Export]
         protected float acceleration = 20f;
@@ -20,12 +22,24 @@ namespace TenSecs
         private float dirSineOffset = Arena.RNG.RandfRange(-Mathf.Tau, Mathf.Tau);
         private AnimatedSprite sprite;
         private bool isFacingRight = false;
-        private ShaderMaterial shaderMaterial;
+        private ShaderMaterial shaderMaterial = null;
         private Shaker shaker;
 
-        [Export]
-        public int MaxHealth { get; set; } = 1;
-        public int CurrentHealth { get; set; }
+        private int currentHealth = 1;
+        public int CurrentHealth
+        {
+            get { return currentHealth; }
+            set
+            {
+                if (currentHealth != value)
+                {
+                    currentHealth = value;
+
+                    if (shaderMaterial != null)
+                        shaderMaterial.SetShaderParam("hueshift_amount", healthHueShifts[Mathf.Clamp(currentHealth - 1, 0, healthHueShifts.Length - 1)]);
+                }
+            }
+        }
 
         public bool CanAttack { get; set; } = true;
 
@@ -35,8 +49,8 @@ namespace TenSecs
 
             sprite = GetNode<AnimatedSprite>("AnimatedSprite");
             shaderMaterial = (ShaderMaterial)sprite.Material;
+            shaderMaterial.SetShaderParam("hueshift_amount", healthHueShifts[currentHealth - 1]);
             shaker = GetNode<Shaker>("Shaker");
-            CurrentHealth = MaxHealth;
         }
 
         public override void _Process(float delta)
@@ -128,6 +142,8 @@ namespace TenSecs
         private void Die()
         {
             EmitSignal(nameof(Dying));
+
+            Arena.MakeEnemyDeathParticles(GlobalPosition);
 
             QueueFree();
         }

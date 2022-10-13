@@ -1,10 +1,18 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://textures/shadow_small.png" type="Texture" id=1]
 [ext_resource path="res://textures/carrot.png" type="Texture" id=2]
 [ext_resource path="res://shader/HFrames.gdshader" type="Shader" id=3]
 [ext_resource path="res://textures/bamboo.png" type="Texture" id=4]
 [ext_resource path="res://scenes/Player.cs" type="Script" id=5]
+[ext_resource path="res://textures/2x2white.png" type="Texture" id=6]
+[ext_resource path="res://shader/DynamicPixelShadow.gdshader" type="Shader" id=7]
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 7 )
+shader_param/shadow_colour = Color( 0, 0, 0, 0.25 )
+shader_param/shadow_size = Vector2( 6, 2 )
+shader_param/pixel_size = 0.5
+shader_param/scale = 1.0
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 3 )
@@ -51,6 +59,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [ 0.0, 0.0 ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Shadow:material:shader_param/scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.28, 0.54 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 1.0, 0.356, 1.0 ]
+}
 
 [sub_resource type="Animation" id=3]
 resource_name = "Bounce2"
@@ -92,6 +112,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [ 0.0, 0.0, 180.0, 360.0 ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Shadow:material:shader_param/scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.28, 0.54 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 1.0, 0.356, 1.0 ]
+}
 
 [sub_resource type="Animation" id=4]
 length = 0.001
@@ -131,6 +163,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [ Vector2( 1, 1 ) ]
 }
+tracks/3/type = "value"
+tracks/3/path = NodePath("Shadow:material:shader_param/scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 1.0 ]
+}
 
 [sub_resource type="CircleShape2D" id=5]
 radius = 2.0
@@ -142,8 +186,10 @@ radius = 24.25
 script = ExtResource( 5 )
 
 [node name="Shadow" type="Sprite" parent="."]
-modulate = Color( 1, 1, 1, 0.376471 )
-texture = ExtResource( 1 )
+material = SubResource( 7 )
+z_index = -1917
+z_as_relative = false
+texture = ExtResource( 6 )
 
 [node name="Carrot" type="Sprite" parent="."]
 material = SubResource( 1 )

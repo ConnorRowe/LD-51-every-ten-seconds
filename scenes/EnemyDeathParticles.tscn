@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://textures/enemy_death_particles.png" type="Texture" id=1]
+[ext_resource path="res://scenes/SmokeParticles.tscn" type="PackedScene" id=2]
+
+[sub_resource type="CanvasItemMaterial" id=12]
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id=10]
+max_value = 1024.0
+_data = [ Vector2( 0, 1 ), 0.0, -1.57522, 0, 1, Vector2( 0.634831, 0 ), -1.57522, 26038.9, 1, 1, Vector2( 0.674157, 1024 ), 26038.9, 0.0, 1, 0 ]
+
+[sub_resource type="CurveTexture" id=11]
+curve = SubResource( 10 )
+
+[sub_resource type="ParticlesMaterial" id=13]
+lifetime_randomness = 0.27
+emission_shape = 1
+emission_sphere_radius = 7.34
+flag_align_y = true
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 16.49
+gravity = Vector3( 0, 196, 0 )
+initial_velocity = 148.44
+initial_velocity_random = 0.13
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping_random = 0.18
+damping_curve = SubResource( 11 )
+anim_offset = 1.0
+anim_offset_random = 1.0
+
+[node name="EnemyDeathParticles" instance=ExtResource( 2 )]
+material = SubResource( 12 )
+lifetime = 2.5
+process_material = SubResource( 13 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": ""
+}

@@ -9,7 +9,7 @@
 shader = ExtResource( 2 )
 shader_param/shadow_colour = Color( 0, 0.529412, 1, 0.25098 )
 shader_param/shadow_size = Vector2( 20, 20 )
-shader_param/pixel_size = 38.0
+shader_param/pixel_size = 1.0
 shader_param/scale = 1.0
 
 [node name="TowerPreview" type="Node2D"]

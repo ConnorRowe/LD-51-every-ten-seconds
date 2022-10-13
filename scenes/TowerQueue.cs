@@ -94,6 +94,8 @@ namespace TenSecs
 
                     towerPreview.QueueFree();
                     towerPreview = null;
+
+                    Arena.MakeSmokeParticles(position);
                 }
             }
 

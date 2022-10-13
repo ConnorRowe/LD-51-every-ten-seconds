@@ -15,6 +15,8 @@ namespace TenSecs
         private List<Enemy> detectedEnemies = new List<Enemy>();
         private float paintAmount = 0f;
 
+        private Particles2D hitParticles;
+
         public override void _Ready()
         {
             sprite = GetNode<Sprite>("CrystalAnchor/Sprite");
@@ -26,6 +28,8 @@ namespace TenSecs
             enemyDetectionArea.Connect("area_exited", this, nameof(EnemyAreaExited));
             var checkPaintTimer = GetNode<Timer>("CheckPaintTimer");
             checkPaintTimer.Connect("timeout", this, nameof(CheckPaint));
+
+            hitParticles = GetNode<Particles2D>("CrystalAnchor/Sprite/HitParticles");
         }
 
         public override void _Process(float delta)
@@ -56,6 +60,12 @@ namespace TenSecs
         {
             DamageHealth(.07f);
             shaker.Shake(.5f);
+
+            var newParticles = (Particles2D)hitParticles.Duplicate((int)DuplicateFlags.Scripts);
+            sprite.AddChild(newParticles);
+            newParticles.Emitting = true;
+            var timer = GetTree().CreateTimer(newParticles.Lifetime);
+            timer.Connect("timeout", newParticles, "queue_free");
         }
 
         private void DamageHealth(float dmg)
