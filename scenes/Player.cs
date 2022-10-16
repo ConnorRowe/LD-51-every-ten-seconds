@@ -31,7 +31,7 @@ namespace TenSecs
             attackShapeQueryParams.SetShape(attackCollisionShape.Shape);
             attackShapeQueryParams.CollideWithAreas = true;
             attackShapeQueryParams.CollideWithBodies = false;
-            attackShapeQueryParams.CollisionLayer = 2;
+            attackShapeQueryParams.CollisionLayer = 22;
 
             shaderMaterial = (ShaderMaterial)GetNode<Sprite>("Carrot").Material;
             animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
@@ -99,10 +99,11 @@ namespace TenSecs
 
                 foreach (var dict in results)
                 {
-                    if (((Godot.Collections.Dictionary)dict)["collider"] is Node node && node.Owner is Enemy enemy)
+                    if (((Godot.Collections.Dictionary)dict)["collider"] is Node node && node.Owner is IPlayerHittable hittable)
                     {
-                        enemy.AddExternalImpulse(Position.DirectionTo(enemy.Position) * 500f);
-						enemy.Hit(0);
+						hittable.PlayerHit();
+                        if(hittable is Enemy enemy)
+                            enemy.AddExternalImpulse(Position.DirectionTo(enemy.Position) * 500f);
                     }
                 }
 

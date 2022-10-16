@@ -22,12 +22,14 @@ namespace TenSecs
         private bool quantifyMetal = true;
         private Label fpsLabel;
         private Godot.Semaphore paintSemaphore = new Semaphore();
-        private TowerQueue towerQueue;
         private float spawnEnemyTime = 2.5f;
         private float currentSpawnCD = 0;
         private float spawnAngle = 0f;
         private Vector2 centrePoint = new Vector2(180, 90);
         private float timeElapsed = 0f;
+        private RichTextLabel towerPlacementLabel;
+        private Shaker towerPlacementShaker;
+        private Label timeElapsedLabel;
 
 
         public override void _Ready()
@@ -36,10 +38,11 @@ namespace TenSecs
 
             robotPaintTexture = GetNode<RobotPaintTexture>("RobotPaintTexture");
             robotPaintTexture.Connect(nameof(RobotPaintTexture.PaintAmountChanged), this, nameof(PaintAmountChanged));
-            progressBar = GetNode<TextureProgress>("ProgressBar");
-            fpsLabel = GetNode<Label>("FPSLabel");
-            towerQueue = GetNode<TowerQueue>("TowerQueue");
-            Connect(nameof(EveryTenSeconds), towerQueue, nameof(towerQueue.EveryTenSeconds));
+            progressBar = GetNode<TextureProgress>("UI/ProgressBar");
+            fpsLabel = GetNode<Label>("UI/FPSLabel");
+            towerPlacementLabel = GetNode<RichTextLabel>("UI/TowerPlacementLabel");
+            towerPlacementShaker = GetNode<Shaker>("UI/TowerPlacementShaker");
+            timeElapsedLabel = GetNode<Label>("UI/TimeElapsedLabel");
 
             var thread = new Godot.Thread();
             thread.Start(this, nameof(CheckRobotPaint), priority: Godot.Thread.Priority.Low);
@@ -61,6 +64,8 @@ namespace TenSecs
             fpsLabel.Text = Engine.GetFramesPerSecond().ToString();
 
             timeElapsed += delta;
+
+            timeElapsedLabel.Text = string.Format("{0:00}:{1:00}", (timeElapsed / 60) % 60, timeElapsed % 60);
         }
 
         public override void _PhysicsProcess(float delta)
@@ -130,6 +135,18 @@ namespace TenSecs
         public static void MakeEnemyDeathParticles(Vector2 position)
         {
             MakeParticles(enemyParticlesScene, position);
+        }
+
+        public static void ShowTowerPlacementLabel(string towerName, int price)
+        {
+            INSTANCE.towerPlacementLabel.BbcodeText = string.Format("[center]Placing: {0}\nCost: {1}\n{2} Place\n{3} Cancel[/center]", towerName, price, InputImgBBCode.LeftClick, InputImgBBCode.RightClick);
+            INSTANCE.towerPlacementLabel.Visible = true;
+            INSTANCE.towerPlacementShaker.Shake(2);
+        }
+
+        public static void HideTowerPlacementLabel()
+        {
+            INSTANCE.towerPlacementLabel.Visible = false;
         }
     }
 }

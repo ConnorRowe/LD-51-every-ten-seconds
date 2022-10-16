@@ -11,7 +11,7 @@
 resource_local_to_scene = true
 shader = ExtResource( 4 )
 shader_param/flash_lerp = 0.0
-shader_param/hueshift_amount = 0.582
+shader_param/hueshift_amount = 0.64
 shader_param/hueshift_mask_tex = ExtResource( 6 )
 
 [sub_resource type="AtlasTexture" id=1]

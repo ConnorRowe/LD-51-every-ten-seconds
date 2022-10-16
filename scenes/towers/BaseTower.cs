@@ -8,6 +8,34 @@ namespace TenSecs
         protected List<Enemy> detectedEnemies = new List<Enemy>();
         protected Shaker shaker;
         protected Timer attackTimer;
+        private Label mouseOverLabel;
+        private string towerName = "";
+        public string TowerName
+        {
+            get { return towerName; }
+            set
+            {
+                if (towerName != value)
+                {
+                    towerName = value;
+                    UpdateMouseoverLabel();
+                }
+            }
+        }
+        private int level = 1;
+        protected int Level
+        {
+            get { return level; }
+            set
+            {
+                if (level != value)
+                {
+                    level = value;
+                    UpdateMouseoverLabel();
+                }
+            }
+        }
+
 
         public override void _Ready()
         {
@@ -23,6 +51,19 @@ namespace TenSecs
 
             attackTimer = GetNode<Timer>("AttackTimer");
             attackTimer.Connect("timeout", this, nameof(Attack));
+
+            var exclusionArea = GetNode("ExclusionArea");
+            exclusionArea.Connect("mouse_entered", this, nameof(MouseEntered));
+            exclusionArea.Connect("mouse_exited", this, nameof(MouseExited));
+        }
+
+        public void Initialise(Vector2 position)
+        {
+            mouseOverLabel = GetNode<Label>("MouseOverLabel");
+            RemoveChild(mouseOverLabel);
+            GetParent().GetNode("UI").AddChild(mouseOverLabel);
+            mouseOverLabel.RectPosition += Position;
+            UpdateMouseoverLabel();
         }
 
         private void EnemyAreaEntered(Area2D area)
@@ -50,9 +91,27 @@ namespace TenSecs
 
         public virtual void Upgrade()
         {
+            level++;
             attackTimer.WaitTime *= .8f;
 
             GD.Print("Upgraded ", Name);
+            UpdateMouseoverLabel();
+        }
+
+        private void MouseEntered()
+        {
+            mouseOverLabel.Visible = true;
+        }
+
+        private void MouseExited()
+        {
+            mouseOverLabel.Visible = false;
+        }
+
+        private void UpdateMouseoverLabel()
+        {
+            if (mouseOverLabel != null)
+                mouseOverLabel.Text = string.Format("{0} - lvl.{1}", towerName, level);
         }
     }
 }

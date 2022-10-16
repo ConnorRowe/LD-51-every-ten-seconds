@@ -1,0 +1,173 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://font/Normal.tres" type="DynamicFont" id=1]
+[ext_resource path="res://textures/shop_slot_frame.png" type="Texture" id=2]
+[ext_resource path="res://textures/icon_stumpshooter.png" type="Texture" id=3]
+[ext_resource path="res://textures/icon_bombfruit.png" type="Texture" id=4]
+[ext_resource path="res://MainTheme.tres" type="Theme" id=5]
+[ext_resource path="res://scenes/Shop.cs" type="Script" id=6]
+[ext_resource path="res://textures/icon_upgrader.png" type="Texture" id=7]
+
+[sub_resource type="StyleBoxFlat" id=7]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.25098, 0.2, 0.32549, 0.301961 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.25098, 0.2, 0.32549, 1 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.909804, 0.415686, 0.45098, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.25098, 0.2, 0.32549, 1 )
+
+[sub_resource type="StyleBoxFlat" id=9]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.980392, 0.839216, 0.721569, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.25098, 0.2, 0.32549, 1 )
+
+[node name="Shop" type="Control"]
+script = ExtResource( 6 )
+
+[node name="Title" type="Label" parent="."]
+margin_left = -42.0
+margin_top = 1.0
+margin_bottom = 9.0
+custom_colors/font_color = Color( 0.968627, 0.952941, 0.933333, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "Shop"
+align = 1
+
+[node name="SlotsBG" type="TextureRect" parent="."]
+margin_left = -40.0
+margin_top = 9.0
+margin_right = -2.0
+margin_bottom = 47.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="StumpShooter" type="Button" parent="SlotsBG"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 18.0
+margin_bottom = 18.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+icon = ExtResource( 3 )
+
+[node name="Price" type="Label" parent="SlotsBG/StumpShooter"]
+margin_right = 15.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0.611765, 0.858824, 0.262745, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "80"
+align = 2
+valign = 2
+
+[node name="BombFruit" type="Button" parent="SlotsBG"]
+margin_left = 20.0
+margin_top = 2.0
+margin_right = 36.0
+margin_bottom = 18.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource( 5 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+icon = ExtResource( 4 )
+icon_align = 1
+
+[node name="Price" type="Label" parent="SlotsBG/BombFruit"]
+margin_right = 15.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0.611765, 0.858824, 0.262745, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "50"
+align = 2
+valign = 2
+
+[node name="TowerTooltip" type="Panel" parent="."]
+margin_left = -141.0
+margin_top = 9.0
+margin_right = -42.0
+margin_bottom = 47.0
+rect_pivot_offset = Vector2( 99, 18 )
+mouse_filter = 2
+custom_styles/panel = SubResource( 7 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TowerTooltip"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 6.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = -6.0
+mouse_filter = 2
+custom_constants/separation = 0
+alignment = 1
+
+[node name="TowerName" type="Label" parent="TowerTooltip/VBoxContainer"]
+margin_right = 87.0
+margin_bottom = 6.0
+theme = ExtResource( 5 )
+text = "Tower Name"
+
+[node name="Desc" type="Label" parent="TowerTooltip/VBoxContainer"]
+margin_top = 6.0
+margin_right = 87.0
+margin_bottom = 30.0
+size_flags_vertical = 7
+size_flags_stretch_ratio = 3.39
+theme = ExtResource( 5 )
+custom_colors/font_color = Color( 0.980392, 0.839216, 0.721569, 1 )
+text = "Description of the tower. Details about what it does etc"
+valign = 2
+autowrap = true
+
+[node name="Money" type="Label" parent="."]
+margin_left = -66.0
+margin_top = 170.0
+margin_right = -2.0
+margin_bottom = 178.0
+grow_horizontal = 0
+custom_colors/font_color = Color( 0.968627, 0.952941, 0.933333, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "100"
+align = 2
+valign = 2
+
+[node name="UpgradeButton" type="Button" parent="."]
+margin_left = -40.0
+margin_top = 45.0
+margin_right = -2.0
+margin_bottom = 67.0
+focus_mode = 0
+custom_styles/hover = SubResource( 8 )
+custom_styles/pressed = SubResource( 9 )
+custom_styles/normal = SubResource( 7 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+icon = ExtResource( 7 )
+icon_align = 1

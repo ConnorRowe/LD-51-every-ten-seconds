@@ -3,7 +3,7 @@ using System;
 
 namespace TenSecs
 {
-    public class TowerUpgrader : Node2D
+    public class TowerUpgrader : BaseTower
     {
         public override void _Ready()
         {
@@ -12,8 +12,6 @@ namespace TenSecs
 
         public override void _PhysicsProcess(float delta)
         {
-            base._PhysicsProcess(delta);
-
             var physicsShapeQueryParams = new Physics2DShapeQueryParameters();
             physicsShapeQueryParams.CollideWithAreas = true;
             physicsShapeQueryParams.CollisionLayer = 8;
@@ -48,6 +46,11 @@ namespace TenSecs
 
             SetPhysicsProcess(false);
             QueueFree();
+        }
+
+        protected override void Attack()
+        {
+            return;
         }
     }
 }

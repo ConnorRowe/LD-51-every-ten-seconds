@@ -2,7 +2,7 @@ using Godot;
 
 namespace TenSecs
 {
-    public class Enemy : KinematicBody2D
+    public class Enemy : KinematicBody2D, IPlayerHittable
     {
         [Signal]
         public delegate void Dying();
@@ -116,6 +116,11 @@ namespace TenSecs
         public void AddExternalImpulse(Vector2 impulse)
         {
             externalVelocity += impulse;
+        }
+
+        void IPlayerHittable.PlayerHit()
+        {
+            Hit(0);
         }
 
         public void Hit(int damage)

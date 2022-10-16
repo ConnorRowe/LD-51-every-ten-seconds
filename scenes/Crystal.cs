@@ -7,7 +7,8 @@ namespace TenSecs
     {
         private Sprite sprite;
         private Shaker shaker;
-        private ProgressBar healthBar;
+        private TextureProgress healthBar;
+        private Label healthText;
         private ShaderMaterial shaderMaterial;
 
         private float health = 1f;
@@ -21,13 +22,21 @@ namespace TenSecs
         {
             sprite = GetNode<Sprite>("CrystalAnchor/Sprite");
             shaker = GetNode<Shaker>("Shaker");
-            healthBar = GetNode<ProgressBar>("HealthBar");
+            healthBar = GetNode<TextureProgress>("CrystalAnchor/Sprite/HealthBar");
+            healthBar.Visible = false;
+            healthText = healthBar.GetNode<Label>("Label");
             shaderMaterial = (ShaderMaterial)sprite.Material;
+
             var enemyDetectionArea = GetNode<Area2D>("EnemyDetectionArea");
             enemyDetectionArea.Connect("area_entered", this, nameof(EnemyAreaEntered));
             enemyDetectionArea.Connect("area_exited", this, nameof(EnemyAreaExited));
+
             var checkPaintTimer = GetNode<Timer>("CheckPaintTimer");
             checkPaintTimer.Connect("timeout", this, nameof(CheckPaint));
+
+            var mouseDetection = GetNode("CrystalAnchor/Sprite/MouseDetection");
+            mouseDetection.Connect("mouse_entered", this, nameof(MouseEntered));
+            mouseDetection.Connect("mouse_exited", this, nameof(MouseExited));
 
             hitParticles = GetNode<Particles2D>("CrystalAnchor/Sprite/HitParticles");
         }
@@ -72,6 +81,7 @@ namespace TenSecs
         {
             health -= dmg;
             healthBar.Value = health;
+            healthText.Text = string.Format("{0}%", (int)(health * 100));
 
             if (health <= .8f && health > .6f)
                 SetCrystalFrame(1);
@@ -104,6 +114,16 @@ namespace TenSecs
         {
             if (area.Owner is Enemy enemy)
                 detectedEnemies.Remove(enemy);
+        }
+
+        private void MouseEntered()
+        {
+            healthBar.Visible = true;
+        }
+
+        private void MouseExited()
+        {
+            healthBar.Visible = false;
         }
 
         private void CheckPaint()

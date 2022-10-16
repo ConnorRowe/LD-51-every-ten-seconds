@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://textures/crystal.png" type="Texture" id=1]
 [ext_resource path="res://scenes/Shaker.cs" type="Script" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://shader/HFrames.gdshader" type="Shader" id=7]
 [ext_resource path="res://font/Normal.tres" type="DynamicFont" id=8]
 [ext_resource path="res://textures/crystal_hit_particles.png" type="Texture" id=9]
+[ext_resource path="res://textures/robot_paint_bar_bg.png" type="Texture" id=10]
+[ext_resource path="res://textures/robot_paint_bar_fill.png" type="Texture" id=11]
 
 [sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 6 )
@@ -65,6 +67,10 @@ orbit_velocity_random = 0.0
 damping_random = 0.22
 damping_curve = SubResource( 11 )
 anim_speed = 1.0
+
+[sub_resource type="CapsuleShape2D" id=13]
+radius = 14.0
+height = 28.0
 
 [sub_resource type="Animation" id=1]
 resource_name = "Float"
@@ -155,7 +161,7 @@ script = ExtResource( 3 )
 
 [node name="Shadow" type="Sprite" parent="."]
 material = SubResource( 6 )
-position = Vector2( 0, 28.5 )
+position = Vector2( 2, 28.5 )
 z_index = -1917
 z_as_relative = false
 texture = ExtResource( 5 )
@@ -191,6 +197,42 @@ draw_order = 1
 process_material = SubResource( 12 )
 texture = ExtResource( 9 )
 
+[node name="HealthBar" type="TextureProgress" parent="CrystalAnchor/Sprite"]
+margin_left = -25.0
+margin_top = -64.0
+margin_right = 25.0
+margin_bottom = -58.0
+max_value = 1.0
+step = 0.0
+texture_under = ExtResource( 10 )
+texture_progress = ExtResource( 11 )
+nine_patch_stretch = true
+stretch_margin_left = 3
+stretch_margin_top = 3
+stretch_margin_right = 3
+stretch_margin_bottom = 3
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Label" type="Label" parent="CrystalAnchor/Sprite/HealthBar"]
+margin_top = -7.0
+margin_right = 50.0
+margin_bottom = 7.0
+custom_colors/font_color = Color( 0.968627, 0.952941, 0.933333, 1 )
+custom_fonts/font = ExtResource( 8 )
+text = "100%"
+align = 1
+
+[node name="MouseDetection" type="Area2D" parent="CrystalAnchor/Sprite"]
+position = Vector2( 0, -29 )
+collision_layer = 16
+collision_mask = 0
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CrystalAnchor/Sprite/MouseDetection"]
+shape = SubResource( 13 )
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "Float"
 anims/Float = SubResource( 1 )
@@ -200,22 +242,11 @@ anims/RESET = SubResource( 2 )
 script = ExtResource( 2 )
 targetNode2DPath = NodePath("../CrystalAnchor")
 
-[node name="HealthBar" type="ProgressBar" parent="."]
-margin_left = -13.0
-margin_top = 23.0
-margin_right = 100.0
-margin_bottom = 39.0
-rect_scale = Vector2( 0.25, 0.25 )
-custom_fonts/font = ExtResource( 8 )
-max_value = 1.0
-step = 0.0
-value = 1.0
-
 [node name="EnemyDetectionArea" type="Area2D" parent="."]
 position = Vector2( 0, 26 )
-collision_layer = 0
+collision_layer = 8
 collision_mask = 2
-monitorable = false
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea"]
 shape = SubResource( 8 )
