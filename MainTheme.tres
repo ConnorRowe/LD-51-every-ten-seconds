@@ -1,30 +1,90 @@
-[gd_resource type="Theme" load_steps=7 format=2]
+[gd_resource type="Theme" load_steps=16 format=2]
 
 [ext_resource path="res://font/Normal.tres" type="DynamicFont" id=1]
+[ext_resource path="res://textures/on_toggle.png" type="Texture" id=2]
+[ext_resource path="res://textures/slider_bar_bg.png" type="Texture" id=3]
+[ext_resource path="res://textures/off_toggle.png" type="Texture" id=4]
+[ext_resource path="res://textures/bar_slider.png" type="Texture" id=5]
+[ext_resource path="res://textures/btn_normal.png" type="Texture" id=6]
+[ext_resource path="res://textures/btn_pressed.png" type="Texture" id=7]
+[ext_resource path="res://textures/btn_hover.png" type="Texture" id=8]
 
-[sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0.45098, 0.0901961, 0.176471, 1 )
+[sub_resource type="StyleBoxTexture" id=9]
+texture = ExtResource( 6 )
+region_rect = Rect2( 0, 0, 12, 12 )
+margin_left = 2.0
+margin_right = 2.0
+margin_top = 2.0
+margin_bottom = 4.0
+expand_margin_left = 4.0
+expand_margin_right = 4.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color( 0.913725, 0.709804, 0.639216, 1 )
 draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color( 0.34902, 0.756863, 0.207843, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.913725, 0.709804, 0.639216, 1 )
+expand_margin_left = 4.0
+expand_margin_right = 4.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id=3]
-bg_color = Color( 0.278431, 0.490196, 0.521569, 1 )
+[sub_resource type="StyleBoxTexture" id=11]
+texture = ExtResource( 8 )
+region_rect = Rect2( 0, 0, 12, 12 )
+margin_left = 2.0
+margin_right = 2.0
+margin_top = 2.0
+margin_bottom = 4.0
+expand_margin_left = 4.0
+expand_margin_right = 4.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxEmpty" id=4]
+[sub_resource type="StyleBoxTexture" id=10]
+texture = ExtResource( 7 )
+region_rect = Rect2( 0, 0, 12, 12 )
+margin_left = 2.0
+margin_right = 2.0
+margin_top = 5.0
+margin_bottom = 2.0
+expand_margin_left = 4.0
+expand_margin_right = 4.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id=5]
-bg_color = Color( 0.803922, 0.968627, 0.886275, 1 )
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=7]
+
+[sub_resource type="StyleBoxTexture" id=8]
+texture = ExtResource( 3 )
+region_rect = Rect2( 0, 0, 7, 7 )
+margin_left = 2.0
+margin_right = 2.0
+margin_top = 2.0
+margin_bottom = 2.0
 
 [resource]
 default_font = ExtResource( 1 )
-Button/styles/disabled = SubResource( 1 )
-Button/styles/focus = SubResource( 2 )
-Button/styles/hover = SubResource( 3 )
-Button/styles/normal = SubResource( 4 )
-Button/styles/pressed = SubResource( 5 )
+Button/styles/disabled = SubResource( 9 )
+Button/styles/focus = SubResource( 12 )
+Button/styles/hover = SubResource( 11 )
+Button/styles/normal = SubResource( 9 )
+Button/styles/pressed = SubResource( 10 )
+CheckButton/colors/font_color = Color( 0.913725, 0.709804, 0.639216, 1 )
+CheckButton/icons/off = ExtResource( 4 )
+CheckButton/icons/off_disabled = ExtResource( 4 )
+CheckButton/icons/on = ExtResource( 2 )
+CheckButton/icons/on_disabled = ExtResource( 2 )
+HSlider/icons/grabber = ExtResource( 5 )
+HSlider/icons/grabber_highlight = ExtResource( 5 )
+HSlider/styles/grabber_area = SubResource( 6 )
+HSlider/styles/grabber_area_highlight = SubResource( 7 )
+HSlider/styles/slider = SubResource( 8 )
+Label/colors/font_color = Color( 0.913725, 0.709804, 0.639216, 1 )

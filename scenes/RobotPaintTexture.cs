@@ -13,14 +13,19 @@ namespace TenSecs
 
         private static Vector2[] plusPixels = new Vector2[5] { Vector2.Up, Vector2.Left, Vector2.Zero, Vector2.Right, Vector2.Down };
         private static Image splatImg = GD.Load<Texture>("res://textures/splat.png").GetData();
+        private static Image healMask = GD.Load<Texture>("res://textures/heal_mask.png").GetData();
+        private static Image healImg = GD.Load<Texture>("res://textures/heal_img.png").GetData();
         static RobotPaintTexture()
         {
             splatImg.Convert(ImageFormat);
+            healMask.Convert(ImageFormat);            
+            healImg.Convert(ImageFormat);            
         }
         private ImageTexture drawImgTex = new ImageTexture();
         private Image img;
         private List<Vector2> pixelQueue = new List<Vector2>();
         private List<Vector2> splatQueue = new List<Vector2>();
+        private List<Vector2> healQueue = new List<Vector2>();
 
 
         [Export]
@@ -70,6 +75,11 @@ namespace TenSecs
             foreach (Vector2 dst in splatQueue)
             {
                 img.BlitRectMask(splatImg, splatImg, new Rect2(0, 0, 24, 12), dst);
+            }
+
+            foreach(Vector2 dst in healQueue)
+            {
+                img.BlitRectMask(healImg, healMask, new Rect2(0, 0, 36, 18), dst);
             }
 
             img.Unlock();
@@ -142,6 +152,11 @@ namespace TenSecs
         public static void DrawSplat(Vector2 origin)
         {
             instance.splatQueue.Add(origin + new Vector2(-12, -6));
+        }
+
+        public static void DrawHeal(Vector2 origin)
+        {
+            instance.healQueue.Add(origin + new Vector2(-18, -9));
         }
 
         public void QuantifyMetal()

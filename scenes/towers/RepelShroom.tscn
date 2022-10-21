@@ -1,0 +1,73 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://scenes/towers/BaseTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://textures/sparkle.png" type="Texture" id=2]
+[ext_resource path="res://textures/shroom.png" type="Texture" id=3]
+[ext_resource path="res://scenes/towers/RepelShroom.cs" type="Script" id=4]
+
+[sub_resource type="CanvasItemMaterial" id=1]
+particles_animation = true
+particles_anim_h_frames = 9
+particles_anim_v_frames = 1
+particles_anim_loop = true
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0.883871, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+width = 64
+
+[sub_resource type="Curve" id=4]
+max_value = 1024.0
+bake_resolution = 10
+_data = [ Vector2( 0.314607, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1024 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=5]
+curve = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=6]
+lifetime_randomness = 0.2
+emission_shape = 5
+emission_ring_radius = 16.0
+emission_ring_inner_radius = 12.0
+emission_ring_height = 1.0
+emission_ring_axis = Vector3( 0, 1, 1 )
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+radial_accel = 260.0
+damping_curve = SubResource( 5 )
+color = Color( 0.776471, 0.380392, 0.929412, 1 )
+color_ramp = SubResource( 3 )
+anim_speed = 4.0
+
+[node name="RepelShroom" instance=ExtResource( 1 )]
+script = ExtResource( 4 )
+
+[node name="AttackTimer" parent="." index="1"]
+wait_time = 4.0
+
+[node name="Shaker" parent="." index="2"]
+targetNode2DPath = NodePath("../Anchor")
+maxRotation = 0.554
+
+[node name="CollisionShape2D" parent="ExclusionArea" index="0"]
+position = Vector2( 0, -6 )
+
+[node name="Particles2D" type="Particles2D" parent="." index="5"]
+material = SubResource( 1 )
+emitting = false
+amount = 60
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 6 )
+texture = ExtResource( 2 )
+
+[node name="Anchor" type="Node2D" parent="." index="6"]
+
+[node name="Sprite" type="Sprite" parent="Anchor" index="0"]
+position = Vector2( 0, -10 )
+texture = ExtResource( 3 )

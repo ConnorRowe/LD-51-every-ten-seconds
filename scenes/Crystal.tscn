@@ -250,5 +250,3 @@ input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea"]
 shape = SubResource( 8 )
-
-[node name="CheckPaintTimer" type="Timer" parent="."]

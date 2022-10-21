@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://scenes/towers/BaseTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/towers/HealFlower.cs" type="Script" id=2]
+[ext_resource path="res://textures/heal_flower.png" type="Texture" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 22, 22 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 3 )
+region = Rect2( 22, 0, 22, 22 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 1.0
+} ]
+
+[node name="HealFlower" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="AttackTimer" parent="." index="1"]
+wait_time = 6.0
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="5"]
+frames = SubResource( 3 )
+frame = 1
+playing = true
+offset = Vector2( 0, -11 )

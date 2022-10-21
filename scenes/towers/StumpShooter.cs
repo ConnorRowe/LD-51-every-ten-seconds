@@ -86,6 +86,8 @@ namespace TenSecs
                 pellet.Position = GlobalPosition + shooterOffset + (dir * ellipse);
                 pellet.Velocity = dir * 2f;
                 shaker.Shake(1);
+
+                SFX.TowerShoot();
             }
         }
 

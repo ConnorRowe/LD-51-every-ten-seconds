@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/ld51_theme_trim.ogg-68e2ae86b4aa0337cda3f1900fe0c4f6.oggstr"
+
+[deps]
+
+source_file="res://audio/ld51_theme_trim.ogg"
+dest_files=[ "res://.import/ld51_theme_trim.ogg-68e2ae86b4aa0337cda3f1900fe0c4f6.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=4.363

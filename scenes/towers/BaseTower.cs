@@ -5,6 +5,7 @@ namespace TenSecs
 {
     public abstract class BaseTower : Node2D
     {
+        public TowerType TowerType { get; set; }
         protected List<Enemy> detectedEnemies = new List<Enemy>();
         protected Shaker shaker;
         protected Timer attackTimer;
@@ -23,7 +24,7 @@ namespace TenSecs
             }
         }
         private int level = 1;
-        protected int Level
+        public int Level
         {
             get { return level; }
             set
@@ -61,7 +62,8 @@ namespace TenSecs
         {
             mouseOverLabel = GetNode<Label>("MouseOverLabel");
             RemoveChild(mouseOverLabel);
-            GetParent().GetNode("UI").AddChild(mouseOverLabel);
+            Arena.INSTANCE.UI.AddChild(mouseOverLabel);
+            Arena.INSTANCE.UI.MoveChild(mouseOverLabel, 0);
             mouseOverLabel.RectPosition += Position;
             UpdateMouseoverLabel();
         }
@@ -112,6 +114,11 @@ namespace TenSecs
         {
             if (mouseOverLabel != null)
                 mouseOverLabel.Text = string.Format("{0} - lvl.{1}", towerName, level);
+        }
+
+        public int GetUpgradeCost()
+        {
+            return TowerType.Price + Mathf.RoundToInt(TowerType.Price * ((float)Level * .5f));
         }
     }
 }

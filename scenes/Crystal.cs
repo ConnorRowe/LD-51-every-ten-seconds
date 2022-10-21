@@ -5,6 +5,9 @@ namespace TenSecs
 {
     public class Crystal : Node2D
     {
+        [Signal]
+        public delegate void CrystalDead();
+
         private Sprite sprite;
         private Shaker shaker;
         private TextureProgress healthBar;
@@ -17,6 +20,7 @@ namespace TenSecs
         private float paintAmount = 0f;
 
         private Particles2D hitParticles;
+        private bool dead = false;
 
         public override void _Ready()
         {
@@ -31,8 +35,7 @@ namespace TenSecs
             enemyDetectionArea.Connect("area_entered", this, nameof(EnemyAreaEntered));
             enemyDetectionArea.Connect("area_exited", this, nameof(EnemyAreaExited));
 
-            var checkPaintTimer = GetNode<Timer>("CheckPaintTimer");
-            checkPaintTimer.Connect("timeout", this, nameof(CheckPaint));
+            GetParent().GetNode<RobotPaintTexture>("RobotPaintTexture").Connect(nameof(RobotPaintTexture.PaintAmountChanged), this, nameof(PaintAmountChanged));
 
             var mouseDetection = GetNode("CrystalAnchor/Sprite/MouseDetection");
             mouseDetection.Connect("mouse_entered", this, nameof(MouseEntered));
@@ -43,6 +46,9 @@ namespace TenSecs
 
         public override void _Process(float delta)
         {
+            if (dead)
+                return;
+
             sprite.ZIndex = (int)sprite.GlobalPosition.y;
 
             foreach (Enemy enemy in detectedEnemies)
@@ -51,24 +57,32 @@ namespace TenSecs
                 {
                     Hit();
                     enemy.JustAttacked();
-                    enemy.AddExternalImpulse(Position.DirectionTo(enemy.Position) * 350f);
+                    enemy.AddExternalImpulse(Position.DirectionTo(enemy.Position) * 300f);
                 }
             }
 
-            if (paintAmount >= .5f && paintAmount < .75f)
+            if (paintAmount >= .25f && paintAmount < .5f)
             {
-                DamageHealth(1f * delta);
+                DamageHealth(.0025f * delta);
+            }
+            else if (paintAmount >= .5f && paintAmount < .75f)
+            {
+                DamageHealth(.0125f * delta);
             }
             else if (paintAmount >= .75)
             {
-                DamageHealth(3f * delta);
+                DamageHealth(.05f * delta);
             }
         }
 
         private void Hit()
         {
+            if (dead)
+                return;
+
             DamageHealth(.07f);
             shaker.Shake(.5f);
+            SFX.CrystalHit();
 
             var newParticles = (Particles2D)hitParticles.Duplicate((int)DuplicateFlags.Scripts);
             sprite.AddChild(newParticles);
@@ -79,7 +93,11 @@ namespace TenSecs
 
         private void DamageHealth(float dmg)
         {
+            if (dead)
+                return;
+
             health -= dmg;
+            health = Mathf.Clamp(health, 0, 1);
             healthBar.Value = health;
             healthText.Text = string.Format("{0}%", (int)(health * 100));
 
@@ -93,6 +111,14 @@ namespace TenSecs
                 SetCrystalFrame(4);
             else if (health <= .0f)
                 SetCrystalFrame(5);
+
+            if (health <= 0f)
+                EmitSignal(nameof(CrystalDead));
+        }
+
+        public void HealFromOrb()
+        {
+            DamageHealth(-.02f);
         }
 
         private void SetCrystalFrame(int frame)
@@ -126,9 +152,15 @@ namespace TenSecs
             healthBar.Visible = false;
         }
 
-        private void CheckPaint()
+        private void PaintAmountChanged(float paintAmount)
         {
-            paintAmount = RobotPaintTexture.PaintAmount;
+            this.paintAmount = paintAmount;
         }
+
+        public void Quit()
+        {
+            DamageHealth(999999999999);
+        }
+
     }
 }

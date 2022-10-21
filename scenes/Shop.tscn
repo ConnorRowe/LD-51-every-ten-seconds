@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://font/Normal.tres" type="DynamicFont" id=1]
 [ext_resource path="res://textures/shop_slot_frame.png" type="Texture" id=2]
@@ -7,6 +7,20 @@
 [ext_resource path="res://MainTheme.tres" type="Theme" id=5]
 [ext_resource path="res://scenes/Shop.cs" type="Script" id=6]
 [ext_resource path="res://textures/icon_upgrader.png" type="Texture" id=7]
+[ext_resource path="res://textures/icon_shroom.png" type="Texture" id=8]
+[ext_resource path="res://textures/acorn.png" type="Texture" id=9]
+[ext_resource path="res://scenes/Shaker.cs" type="Script" id=10]
+[ext_resource path="res://textures/icon_flower.png" type="Texture" id=11]
+
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 0.976471, 0.639216, 0.105882, 0.435294 )
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 1, 1, 1, 0.639216 )
+
+[sub_resource type="StyleBoxEmpty" id=12]
+
+[sub_resource type="StyleBoxEmpty" id=13]
 
 [sub_resource type="StyleBoxFlat" id=7]
 content_margin_left = 3.0
@@ -44,6 +58,10 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color( 0.25098, 0.2, 0.32549, 1 )
 
+[sub_resource type="StyleBoxEmpty" id=14]
+
+[sub_resource type="StyleBoxEmpty" id=15]
+
 [node name="Shop" type="Control"]
 script = ExtResource( 6 )
 
@@ -61,7 +79,7 @@ margin_left = -40.0
 margin_top = 9.0
 margin_right = -2.0
 margin_bottom = 47.0
-mouse_filter = 2
+mouse_filter = 0
 texture = ExtResource( 2 )
 stretch_mode = 2
 
@@ -73,6 +91,11 @@ margin_bottom = 18.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme = ExtResource( 5 )
+custom_styles/hover = SubResource( 10 )
+custom_styles/pressed = SubResource( 11 )
+custom_styles/focus = SubResource( 12 )
+custom_styles/disabled = SubResource( 12 )
+custom_styles/normal = SubResource( 13 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 icon = ExtResource( 3 )
@@ -94,6 +117,11 @@ margin_bottom = 18.0
 focus_mode = 0
 mouse_default_cursor_shape = 2
 theme = ExtResource( 5 )
+custom_styles/hover = SubResource( 10 )
+custom_styles/pressed = SubResource( 11 )
+custom_styles/focus = SubResource( 12 )
+custom_styles/disabled = SubResource( 12 )
+custom_styles/normal = SubResource( 13 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
 icon = ExtResource( 4 )
@@ -108,13 +136,67 @@ text = "50"
 align = 2
 valign = 2
 
+[node name="Shroom" type="Button" parent="SlotsBG"]
+margin_left = 2.0
+margin_top = 20.0
+margin_right = 18.0
+margin_bottom = 36.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource( 5 )
+custom_styles/hover = SubResource( 10 )
+custom_styles/pressed = SubResource( 11 )
+custom_styles/focus = SubResource( 12 )
+custom_styles/disabled = SubResource( 12 )
+custom_styles/normal = SubResource( 13 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+icon = ExtResource( 8 )
+icon_align = 1
+
+[node name="Price" type="Label" parent="SlotsBG/Shroom"]
+margin_right = 15.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0.611765, 0.858824, 0.262745, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "50"
+align = 2
+valign = 2
+
+[node name="HealFlower" type="Button" parent="SlotsBG"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 36.0
+margin_bottom = 36.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource( 5 )
+custom_styles/hover = SubResource( 10 )
+custom_styles/pressed = SubResource( 11 )
+custom_styles/focus = SubResource( 12 )
+custom_styles/disabled = SubResource( 12 )
+custom_styles/normal = SubResource( 13 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+icon = ExtResource( 11 )
+
+[node name="Price" type="Label" parent="SlotsBG/HealFlower"]
+margin_right = 15.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0.611765, 0.858824, 0.262745, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "80"
+align = 2
+valign = 2
+
 [node name="TowerTooltip" type="Panel" parent="."]
 margin_left = -141.0
 margin_top = 9.0
 margin_right = -42.0
-margin_bottom = 47.0
+margin_bottom = 67.0
 rect_pivot_offset = Vector2( 99, 18 )
 mouse_filter = 2
+theme = ExtResource( 5 )
 custom_styles/panel = SubResource( 7 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TowerTooltip"]
@@ -131,32 +213,44 @@ alignment = 1
 [node name="TowerName" type="Label" parent="TowerTooltip/VBoxContainer"]
 margin_right = 87.0
 margin_bottom = 6.0
-theme = ExtResource( 5 )
+custom_colors/font_color = Color( 1, 0.835294, 0.254902, 1 )
 text = "Tower Name"
 
 [node name="Desc" type="Label" parent="TowerTooltip/VBoxContainer"]
 margin_top = 6.0
 margin_right = 87.0
-margin_bottom = 30.0
+margin_bottom = 46.0
 size_flags_vertical = 7
 size_flags_stretch_ratio = 3.39
-theme = ExtResource( 5 )
-custom_colors/font_color = Color( 0.980392, 0.839216, 0.721569, 1 )
 text = "Description of the tower. Details about what it does etc"
 valign = 2
 autowrap = true
 
 [node name="Money" type="Label" parent="."]
-margin_left = -66.0
-margin_top = 170.0
-margin_right = -2.0
-margin_bottom = 178.0
+margin_left = -79.0
+margin_top = 169.0
+margin_right = -15.0
+margin_bottom = 177.0
 grow_horizontal = 0
-custom_colors/font_color = Color( 0.968627, 0.952941, 0.933333, 1 )
+custom_colors/font_color = Color( 0.839216, 0.94902, 0.392157, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "100"
 align = 2
 valign = 2
+
+[node name="AcornHolder" type="Node2D" parent="Money"]
+position = Vector2( 71, 3 )
+
+[node name="Acorn" type="Sprite" parent="Money/AcornHolder"]
+texture = ExtResource( 9 )
+centered = false
+offset = Vector2( -4, -5 )
+
+[node name="AcornShaker" type="Node" parent="Money"]
+script = ExtResource( 10 )
+targetNode2DPath = NodePath("../AcornHolder/Acorn")
+maxRotation = 0.4
+maxOffset = Vector2( 4, 4 )
 
 [node name="UpgradeButton" type="Button" parent="."]
 margin_left = -40.0
@@ -166,6 +260,8 @@ margin_bottom = 67.0
 focus_mode = 0
 custom_styles/hover = SubResource( 8 )
 custom_styles/pressed = SubResource( 9 )
+custom_styles/focus = SubResource( 14 )
+custom_styles/disabled = SubResource( 15 )
 custom_styles/normal = SubResource( 7 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0

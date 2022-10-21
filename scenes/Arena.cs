@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace TenSecs
 {
@@ -9,13 +10,19 @@ namespace TenSecs
         private static PackedScene enemyScene = GD.Load<PackedScene>("res://scenes/Enemy.tscn");
         private static PackedScene smokeParticlesScene = GD.Load<PackedScene>("res://scenes/SmokeParticles.tscn");
         private static PackedScene enemyParticlesScene = GD.Load<PackedScene>("res://scenes/EnemyDeathParticles.tscn");
+        private static PackedScene upgradeParticlesScene = GD.Load<PackedScene>("res://scenes/TowerUpgradeParticles.tscn");
+        private static Texture paintBarFillFine = GD.Load<Texture>("res://textures/robot_paint_bar_fill.png");
+        private static Texture paintBarFillHurt = GD.Load<Texture>("res://textures/robot_paint_bar_fill_hurt.png");
+        private static Texture paintBarFillBad = GD.Load<Texture>("res://textures/robot_paint_bar_fill_bad.png");
+        private static Texture paintBarFillVeryBad = GD.Load<Texture>("res://textures/robot_paint_bar_fill_verybad.png");
         [Signal]
         public delegate void EveryTenSeconds();
         static Arena()
         {
             RNG.Randomize();
         }
-
+        public CanvasLayer UI { get; private set; }
+        public Crystal Crystal { get; set; }
         private RobotPaintTexture robotPaintTexture;
         private Vector2 lastCursorPos;
         private TextureProgress progressBar;
@@ -30,6 +37,10 @@ namespace TenSecs
         private RichTextLabel towerPlacementLabel;
         private Shaker towerPlacementShaker;
         private Label timeElapsedLabel;
+        private Label paintHoverLabel;
+        private TextureRect helpOverlay;
+        private RichTextLabel helpInfo;
+        private Panel towerPlacementPanel;
 
 
         public override void _Ready()
@@ -40,15 +51,30 @@ namespace TenSecs
             robotPaintTexture.Connect(nameof(RobotPaintTexture.PaintAmountChanged), this, nameof(PaintAmountChanged));
             progressBar = GetNode<TextureProgress>("UI/ProgressBar");
             fpsLabel = GetNode<Label>("UI/FPSLabel");
-            towerPlacementLabel = GetNode<RichTextLabel>("UI/TowerPlacementLabel");
-            towerPlacementShaker = GetNode<Shaker>("UI/TowerPlacementShaker");
+            towerPlacementPanel = GetNode<Panel>("UI/TowerTooltip");
+            towerPlacementLabel = GetNode<RichTextLabel>("UI/TowerTooltip/TowerPlacementLabel");
+            towerPlacementShaker = GetNode<Shaker>("UI/TowerTooltip/TowerPlacementShaker");
             timeElapsedLabel = GetNode<Label>("UI/TimeElapsedLabel");
+            UI = GetNode<CanvasLayer>("UI");
+            Crystal = GetNode<Crystal>("Crystal");
+            Crystal.Connect(nameof(Crystal.CrystalDead), this, nameof(CrystalDead));
+            helpOverlay = GetNode<TextureRect>("UI/HelpOverlay");
+            helpInfo = GetNode<RichTextLabel>("UI/HelpOverlay/H");
+            GetNode("UI/PausePopup").Connect(nameof(PausePopup.Quit), Crystal, nameof(Crystal.Quit));
 
             var thread = new Godot.Thread();
             thread.Start(this, nameof(CheckRobotPaint), priority: Godot.Thread.Priority.Low);
 
             GetNode<Timer>("CheckPaintTimer").Connect("timeout", this, nameof(PaintTimeout));
             GetNode<Timer>("EveryTenSeconds").Connect("timeout", this, nameof(EveryTenSecs));
+
+            paintHoverLabel = GetNode<Label>("UI/ProgressBar/PaintHover");
+            progressBar.Connect("mouse_entered", paintHoverLabel, "set_visible", new Godot.Collections.Array(true));
+            progressBar.Connect("mouse_exited", paintHoverLabel, "set_visible", new Godot.Collections.Array(false));
+
+            Music.PlayThemeMusic();
+
+            SetProcess(false);
         }
 
         public override void _Process(float delta)
@@ -65,7 +91,7 @@ namespace TenSecs
 
             timeElapsed += delta;
 
-            timeElapsedLabel.Text = string.Format("{0:00}:{1:00}", (timeElapsed / 60) % 60, timeElapsed % 60);
+            timeElapsedLabel.Text = DateTime.FromBinary(599266080000000000).AddSeconds(timeElapsed).ToString("mm:ss");
         }
 
         public override void _PhysicsProcess(float delta)
@@ -81,6 +107,28 @@ namespace TenSecs
                     SpawnEnemy((Vector2)result["position"]);
                 else
                     GD.Print("Failed to spawn an enemy, this should never happen!");
+            }
+        }
+
+        public override void _Input(InputEvent evt)
+        {
+            base._Input(evt);
+
+
+            if (evt.IsActionPressed("help"))
+            {
+                helpOverlay.Visible = true;
+                if (helpInfo.Visible)
+                {
+                    helpInfo.Visible = false;
+                    SetProcess(true);
+                    GetNode<Timer>("EveryTenSeconds").Start();
+                }
+
+            }
+            if (evt.IsActionReleased("help"))
+            {
+                helpOverlay.Visible = false;
             }
         }
 
@@ -106,6 +154,21 @@ namespace TenSecs
         private void PaintAmountChanged(float paintAmount)
         {
             progressBar.Value = paintAmount;
+
+            Texture fillTex = paintBarFillFine;
+            string hint = "Doin' fine";
+            if (paintAmount >= .25f && paintAmount < .5f)
+            { fillTex = paintBarFillHurt; hint = "Heal the forest!"; }
+            else if (paintAmount >= .5f && paintAmount < .75f)
+            { fillTex = paintBarFillBad; hint = "Seriously get rid of the robits' metal."; }
+            else if (paintAmount >= .75f)
+            { fillTex = paintBarFillVeryBad; hint = "THE FOREST IS DOOMED"; }
+
+            if (progressBar.TextureProgress_ != fillTex)
+                progressBar.TextureProgress_ = fillTex;
+
+            paintHoverLabel.Text = string.Format("{0}% ~ {1}", Mathf.RoundToInt(paintAmount * 100).ToString(), hint);
+
         }
 
         private void SpawnEnemy(Vector2 position)
@@ -117,6 +180,10 @@ namespace TenSecs
             int enemyHealth = Mathf.Clamp(RNG.RandiRange(1, Mathf.RoundToInt(5f / (timeElapsed / 30))) * Mathf.RoundToInt(timeElapsed / 90), 1, 5);
 
             enemy.CurrentHealth = enemyHealth;
+
+            if (enemyHealth > 1)
+                enemy.ThrowGrenades(5f - (enemyHealth * .5f));
+
         }
 
         private static void MakeParticles(PackedScene particlesScene, Vector2 position)
@@ -137,16 +204,47 @@ namespace TenSecs
             MakeParticles(enemyParticlesScene, position);
         }
 
-        public static void ShowTowerPlacementLabel(string towerName, int price)
+        public static void MakeUpgradeParticles(Vector2 position)
         {
-            INSTANCE.towerPlacementLabel.BbcodeText = string.Format("[center]Placing: {0}\nCost: {1}\n{2} Place\n{3} Cancel[/center]", towerName, price, InputImgBBCode.LeftClick, InputImgBBCode.RightClick);
-            INSTANCE.towerPlacementLabel.Visible = true;
-            INSTANCE.towerPlacementShaker.Shake(2);
+            MakeParticles(upgradeParticlesScene, position);
+        }
+
+        public static void ShowTowerPlacementLabel(string towerName, int price, float shake = 2f, bool upgrading = false)
+        {
+            INSTANCE.towerPlacementPanel.Visible = true;
+            INSTANCE.towerPlacementLabel.BbcodeText = string.Format("[center]{0}: {1}\nCost: {2} {3}\n{4} Place\n{5} Cancel[/center]", upgrading ? "Upgrading" : "Placing", towerName, price, InputImgBBCode.Acorn, InputImgBBCode.LeftClick, InputImgBBCode.RightClick);
+            INSTANCE.towerPlacementShaker.Shake(shake);
         }
 
         public static void HideTowerPlacementLabel()
         {
-            INSTANCE.towerPlacementLabel.Visible = false;
+            INSTANCE.towerPlacementPanel.Visible = false;
+        }
+
+        private void CrystalDead()
+        {
+            Crystal.Disconnect(nameof(Crystal.CrystalDead), this, nameof(CrystalDead));
+
+            SetProcess(false);
+            SetPhysicsProcess(false);
+
+            Music.StopMusic();
+            SFX.CrystalSmash();
+
+            GetNode<Player>("Player").LockInput = true;
+
+            foreach (Node node in GetChildren())
+            {
+                if (node is Enemy || node is BaseTower || node is Projectile || node is HealOrb || node is PaintGrenade)
+                    node.QueueFree();
+            }
+
+            GetNode<AnimationPlayer>("GameOverPlayer").Play("End");
+
+            GetNode<RichTextLabel>("GameOver").BbcodeText += timeElapsedLabel.Text;
+
+            SaveData.SetValue("max_time", timeElapsed);
+            SaveData.SaveToDisk();
         }
     }
 }

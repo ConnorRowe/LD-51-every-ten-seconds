@@ -4,6 +4,8 @@ namespace TenSecs
 {
     public class Enemy : KinematicBody2D, IPlayerHittable
     {
+        private static PackedScene grenadeScene = GD.Load<PackedScene>("res://scenes/PaintGrenade.tscn");
+
         [Signal]
         public delegate void Dying();
 
@@ -24,6 +26,7 @@ namespace TenSecs
         private bool isFacingRight = false;
         private ShaderMaterial shaderMaterial = null;
         private Shaker shaker;
+        private Timer grenadeTimer;
 
         private int currentHealth = 1;
         public int CurrentHealth
@@ -78,9 +81,9 @@ namespace TenSecs
 
             externalVelocity -= (externalVelocity * 10f * delta);
 
-            if (velocity.Length() > maxSpeed)
+            if (velocity.Length() > GetMaxSpeed())
             {
-                velocity = velocity.Normalized() * maxSpeed;
+                velocity = velocity.Normalized() * GetMaxSpeed();
             }
 
             MoveAndSlide(velocity + externalVelocity);
@@ -100,6 +103,29 @@ namespace TenSecs
 
             ZAsRelative = false;
             ZIndex = (int)GlobalPosition.y;
+        }
+
+        public void ThrowGrenades(float interval)
+        {
+            grenadeTimer = new Timer();
+            grenadeTimer.WaitTime = interval;
+            AddChild(grenadeTimer);
+            grenadeTimer.Connect("timeout", this, nameof(ThrowGrenade));
+            grenadeTimer.Start();
+        }
+
+        private void ThrowGrenade()
+        {
+            var grenade = grenadeScene.Instance<PaintGrenade>();
+            Arena.INSTANCE.AddChild(grenade);
+            grenade.Position = Position;
+            grenade.ZIndex = ZIndex;
+            SFX.ShootGrenade();
+        }
+
+        private float GetMaxSpeed()
+        {
+            return maxSpeed + (maxSpeed * .5f * (currentHealth - 1));
         }
 
         private void FlipDirection()
@@ -142,6 +168,10 @@ namespace TenSecs
             {
                 Die();
             }
+            else
+            {
+                SFX.EnemyHit();
+            }
         }
 
         private void Die()
@@ -149,6 +179,8 @@ namespace TenSecs
             EmitSignal(nameof(Dying));
 
             Arena.MakeEnemyDeathParticles(GlobalPosition);
+
+            SFX.EnemyDeath();
 
             QueueFree();
         }

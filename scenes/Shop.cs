@@ -10,9 +10,10 @@ namespace TenSecs
         private Panel tooltipPanel;
         private Label tooltipName;
         private Label tooltipDesc;
-        private TowerPreview towerPreview = null;
+        public TowerPreview TowerPreview { get; set; } = null;
         private TowerType previewedType = null;
         private Label moneyLabel;
+        private Shaker acornShaker = null;
 
         private int money = 100;
         public int Money
@@ -22,8 +23,14 @@ namespace TenSecs
             {
                 if (money != value)
                 {
+                    int diff = value - money;
+
+                    FloatingText.SpawnText(string.Format("[color=#{0}]{1}{2}", diff > 0 ? "9cdb43" : "b4202a", diff > 0 ? "+" : "", diff.ToString()), new Vector2(339, 172), 1);
+
                     money = value;
                     moneyLabel.Text = money.ToString();
+
+                    acornShaker?.Shake(1);
                 }
             }
         }
@@ -34,16 +41,16 @@ namespace TenSecs
             tooltipName = GetNode<Label>("TowerTooltip/VBoxContainer/TowerName");
             tooltipDesc = GetNode<Label>("TowerTooltip/VBoxContainer/Desc");
             moneyLabel = GetNode<Label>("Money");
+            acornShaker = GetNode<Shaker>("Money/AcornShaker");
 
             RegisterShopButton(GetNode("SlotsBG/StumpShooter"), TowerTypes.StumpShooter);
             RegisterShopButton(GetNode("SlotsBG/BombFruit"), TowerTypes.BombFruit);
+            RegisterShopButton(GetNode("SlotsBG/Shroom"), TowerTypes.Shroom);
+            RegisterShopButton(GetNode("SlotsBG/HealFlower"), TowerTypes.HealFlower);
+            RegisterShopButton(GetNode("UpgradeButton"), TowerTypes.Upgrader);
 
             GetParent().GetParent().Connect(nameof(Arena.EveryTenSeconds), this, nameof(EveryTenSeconds));
 
-            var upgradeBtn = GetNode("UpgradeButton");
-            upgradeBtn.Connect("mouse_entered", this, nameof(UpgradeMouseEntered));
-            upgradeBtn.Connect("mouse_exited", this, nameof(MouseExited));
-            upgradeBtn.Connect("pressed", this, nameof(UpgradePressed));
 
             tooltipPanel.RectScale = Vector2.Down;
 
@@ -55,20 +62,20 @@ namespace TenSecs
         }
 
 
-        public override void _Input(InputEvent evt)
+        public override void _UnhandledInput(InputEvent evt)
         {
-            base._Input(evt);
+            base._UnhandledInput(evt);
 
-            if (evt.IsActionReleased("attack") && towerPreview != null)
+            if (evt.IsActionReleased("attack") && TowerPreview != null)
             {
                 PlaceTower(GetGlobalMousePosition(), null);
 
                 GetTree().SetInputAsHandled();
             }
-            else if (evt.IsActionReleased("cancel_place_tower") && towerPreview != null)
+            else if (evt.IsActionReleased("cancel_place_tower") && TowerPreview != null)
             {
-                towerPreview.QueueFree();
-                towerPreview = null;
+                TowerPreview.QueueFree();
+                TowerPreview = null;
 
                 Arena.HideTowerPlacementLabel();
             }
@@ -79,6 +86,9 @@ namespace TenSecs
             button.Connect("mouse_entered", this, nameof(ShopBtnMouseEntered), towerType.ToSignalArray());
             button.Connect("mouse_exited", this, nameof(MouseExited));
             button.Connect("pressed", this, nameof(ShopBtnPressed), towerType.ToSignalArray());
+
+            if (towerType != TowerTypes.Upgrader)
+                button.GetNode<Label>("Price").Text = towerType.Price.ToString();
         }
 
         private void ShopBtnPressed(int towerIndex)
@@ -94,30 +104,42 @@ namespace TenSecs
 
         public void PlaceTower(Vector2 position, TowerType towerType)
         {
-            if (towerPreview == null)
+            if (TowerPreview == null)
             {
-                towerPreview = towerPreviewScene.Instance<TowerPreview>();
-                AddChild(towerPreview);
-                towerPreview.Initialise(towerType.ExclusionRadius, towerType.PreviewTexture, towerType.ExclusionInvert);
+                TowerPreview = towerPreviewScene.Instance<TowerPreview>();
+                AddChild(TowerPreview);
+                TowerPreview.Initialise(towerType.ExclusionRadius, towerType.PreviewTexture, towerType.ExclusionInvert);
                 GD.Print(towerType.ExclusionInvert);
                 previewedType = towerType;
             }
             else
             {
-                if (!towerPreview.CanPlace)
+                if (!TowerPreview.CanPlace)
                     return;
 
                 var tower = previewedType.Scene.Instance<BaseTower>();
                 Arena.INSTANCE.AddChild(tower);
                 tower.Position = position;
                 tower.TowerName = previewedType.Name;
-                if(previewedType != TowerTypes.Upgrader)
+                tower.TowerType = previewedType;
+                tower.ZIndex = (int)position.y;
+                if (previewedType != TowerTypes.Upgrader)
+                {
                     tower.Initialise(position);
+                    Arena.MakeSmokeParticles(position);
+                }
+                else
+                {
+                    ((TowerUpgrader)tower).Shop = this;
+                    ((TowerUpgrader)tower).Upgrade(TowerPreview.lastUpgradeTowerSeen);
+                    Arena.MakeUpgradeParticles(position);
+                }
 
-                towerPreview.QueueFree();
-                towerPreview = null;
+                TowerPreview.QueueFree();
+                TowerPreview = null;
 
-                Arena.MakeSmokeParticles(position);
+                SFX.PlaceTower();
+
 
                 Arena.HideTowerPlacementLabel();
 
@@ -130,6 +152,9 @@ namespace TenSecs
         {
             var tt = TowerTypes.FromIndex(towerIndex);
             tooltipName.Text = tt.Name;
+            tooltipDesc.Text = tt.Description;
+
+            SFX.UIClick();
 
             MouseEntered();
         }
@@ -165,19 +190,5 @@ namespace TenSecs
 
             tooltipTransition.Play();
         }
-
-        private void UpgradeMouseEntered()
-        {
-            tooltipName.Text = "Upgrade Tower";
-            tooltipDesc.Text = "Improves one tower. Price varies depending on the tower.";
-
-            MouseEntered();
-        }
-
-        private void UpgradePressed()
-        {
-            PlaceTower(GetGlobalMousePosition(), TowerTypes.Upgrader);
-        }
-
     }
 }

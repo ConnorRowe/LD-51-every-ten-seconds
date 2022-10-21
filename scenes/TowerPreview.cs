@@ -12,6 +12,7 @@ namespace TenSecs
         private ShaderMaterial exclusionAreaMat;
         private CircleShape2D exclusionShape = new CircleShape2D();
         private Physics2DShapeQueryParameters physicsShapeQueryParams = new Physics2DShapeQueryParameters();
+        public BaseTower lastUpgradeTowerSeen { get; set; } = null;
 
         private bool canPlace = false;
         public bool CanPlace
@@ -47,11 +48,40 @@ namespace TenSecs
 
         public override void _PhysicsProcess(float delta)
         {
-            GlobalPosition = GetGlobalMousePosition();
+            var mouseGPos = GetGlobalMousePosition();
+
+            if (mouseGPos.DistanceSquaredTo(GlobalPosition) < 1f)
+                return;
+
+            GlobalPosition = mouseGPos;
             physicsShapeQueryParams.Transform = new Transform2D(0f, GlobalPosition);
 
             var spaceState = GetWorld2d().DirectSpaceState;
-            var results = spaceState.IntersectShape(physicsShapeQueryParams, maxResults: 1);
+            var results = spaceState.IntersectShape(physicsShapeQueryParams);
+
+            if (Invert && results.Count > 0)
+            {
+                BaseTower closestTower = null;
+                float dist = 99999999f;
+                foreach (Godot.Collections.Dictionary result in results)
+                {
+                    if (result["collider"] is Node2D node2D && node2D.Owner is BaseTower baseTower)
+                    {
+                        float newDist = Position.DistanceSquaredTo(node2D.Position);
+                        if (newDist < dist)
+                        {
+                            dist = newDist;
+                            closestTower = baseTower;
+                        }
+                    }
+                }
+
+                if (closestTower != null && lastUpgradeTowerSeen != closestTower)
+                {
+                    lastUpgradeTowerSeen = closestTower;
+                    Arena.ShowTowerPlacementLabel(closestTower.TowerName, closestTower.GetUpgradeCost(), shake: 0f, true);
+                }
+            }
 
             CanPlace = results.Count == 0 ^ Invert;
         }

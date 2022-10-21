@@ -6,6 +6,7 @@ namespace TenSecs
     {
         public static string LeftClick = MakeImgBBCode("res://textures/control_img_left_click.png");
         public static string RightClick = MakeImgBBCode("res://textures/control_img_right_click.png");
+        public static string Acorn = MakeImgBBCode("res://textures/acorn.png");
 
         private static string MakeImgBBCode(string imgPath)
         {

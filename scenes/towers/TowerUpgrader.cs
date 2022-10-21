@@ -5,52 +5,39 @@ namespace TenSecs
 {
     public class TowerUpgrader : BaseTower
     {
+        public Shop Shop { get; set; } = null;
+
         public override void _Ready()
         {
             GetNode<Particles2D>("Particles2D").Emitting = true;
         }
 
-        public override void _PhysicsProcess(float delta)
-        {
-            var physicsShapeQueryParams = new Physics2DShapeQueryParameters();
-            physicsShapeQueryParams.CollideWithAreas = true;
-            physicsShapeQueryParams.CollisionLayer = 8;
-            var shape = new CircleShape2D();
-            shape.Radius = 32;
-            physicsShapeQueryParams.SetShape(shape);
-            physicsShapeQueryParams.Transform = new Transform2D(0f, GlobalPosition);
-
-            var spaceState = GetWorld2d().DirectSpaceState;
-            var results = spaceState.IntersectShape(physicsShapeQueryParams, maxResults: 1);
-
-            float smallestDist = float.MaxValue;
-            BaseTower nearestTower = null;
-            foreach (Godot.Collections.Dictionary dict in results)
-            {
-                if (dict["collider"] is Node node && node.Owner is BaseTower baseTower)
-                {
-                    float dist = GlobalPosition.DistanceSquaredTo(baseTower.GlobalPosition);
-                    if (dist < smallestDist)
-                    {
-                        smallestDist = dist;
-                        nearestTower = baseTower;
-                    }
-                }
-            }
-
-            // If found enemy
-            if (nearestTower != null)
-                nearestTower.Upgrade();
-            else
-                GD.Print("Couldn't find a tower to upgrade, this shouldn't happen!!");
-
-            SetPhysicsProcess(false);
-            QueueFree();
-        }
-
         protected override void Attack()
         {
             return;
+        }
+
+        public void Upgrade(BaseTower towerToUpgrade)
+        {
+            if (towerToUpgrade != null)
+            {
+                int upgradeCost = towerToUpgrade.GetUpgradeCost();
+                if (upgradeCost <= Shop.Money)
+                {
+                    towerToUpgrade.Upgrade();
+                    Shop.Money -= upgradeCost;
+                    FloatingText.SpawnText(string.Format("[color=#9cdb43]{0} upgraded for {1} {2}", towerToUpgrade.TowerName, upgradeCost, InputImgBBCode.Acorn), GlobalPosition);
+                }
+                else
+                {
+                    FloatingText.SpawnText(string.Format("[shake rate=8 level=6][color=#b4202a]Too expensive! ({0} {1})[/color][/shake]", upgradeCost, InputImgBBCode.Acorn), GlobalPosition);
+                }
+            }
+            else
+                GD.PrintErr("Couldn't find a tower to upgrade, this shouldn't happen!!");
+
+            QueueFree();
+
         }
     }
 }

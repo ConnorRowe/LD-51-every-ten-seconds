@@ -86,6 +86,7 @@ namespace TenSecs
                 growthLevel = 0;
                 UpdateSprite();
                 queueExplosion = true;
+                SFX.Explosion();
             }
         }
 
