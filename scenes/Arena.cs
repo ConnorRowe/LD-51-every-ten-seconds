@@ -61,6 +61,7 @@ namespace TenSecs
             helpOverlay = GetNode<TextureRect>("UI/HelpOverlay");
             helpInfo = GetNode<RichTextLabel>("UI/HelpOverlay/H");
             GetNode("UI/PausePopup").Connect(nameof(PausePopup.Quit), Crystal, nameof(Crystal.Quit));
+            GetNode("GameOver/EndButton").Connect("pressed", this, nameof(EndPressed));
 
             var thread = new Godot.Thread();
             thread.Start(this, nameof(CheckRobotPaint), priority: Godot.Thread.Priority.Low);
@@ -243,8 +244,18 @@ namespace TenSecs
 
             GetNode<RichTextLabel>("GameOver").BbcodeText += timeElapsedLabel.Text;
 
-            SaveData.SetValue("max_time", timeElapsed);
-            SaveData.SaveToDisk();
+            if (timeElapsed > SaveData.MaxTime)
+            {
+                SaveData.SetValue("max_time", timeElapsed);
+                SaveData.SaveToDisk();
+                GetNode<RichTextLabel>("GameOver").BbcodeText += "\n[rainbow][wave]New personal best![/wave][/rainbow]";
+            }
+        }
+
+        private void EndPressed()
+        {
+            GetTree().ChangeScene("res://scenes/menus/MainMenu.tscn");
+            QueueFree();
         }
     }
 }

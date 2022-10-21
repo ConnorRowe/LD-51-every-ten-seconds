@@ -18,8 +18,8 @@ namespace TenSecs
         static RobotPaintTexture()
         {
             splatImg.Convert(ImageFormat);
-            healMask.Convert(ImageFormat);            
-            healImg.Convert(ImageFormat);            
+            healMask.Convert(ImageFormat);
+            healImg.Convert(ImageFormat);
         }
         private ImageTexture drawImgTex = new ImageTexture();
         private Image img;
@@ -77,7 +77,7 @@ namespace TenSecs
                 img.BlitRectMask(splatImg, splatImg, new Rect2(0, 0, 24, 12), dst);
             }
 
-            foreach(Vector2 dst in healQueue)
+            foreach (Vector2 dst in healQueue)
             {
                 img.BlitRectMask(healImg, healMask, new Rect2(0, 0, 36, 18), dst);
             }
@@ -88,6 +88,7 @@ namespace TenSecs
 
             pixelQueue.Clear();
             splatQueue.Clear();
+            healQueue.Clear();
 
             drawImgTex.CreateFromImage(img, 1);
             Texture = drawImgTex;

@@ -16,7 +16,7 @@ custom_styles/panel = SubResource( 1 )
 script = ExtResource( 3 )
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="."]
-margin_right = 360.0
+margin_right = 320.0
 margin_bottom = 180.0
 rect_min_size = Vector2( 0, 25.14 )
 rect_rotation = -15.0

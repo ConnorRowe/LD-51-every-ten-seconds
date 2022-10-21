@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace TenSecs
 {
@@ -17,6 +18,8 @@ namespace TenSecs
 
             settings = GetNode<VBoxContainer>("Settings");
             main = GetNode<VBoxContainer>("Main");
+
+            GetNode<Label>("Highscore").Text = string.Format("Personal best: {0}", DateTime.FromBinary(599266080000000000).AddSeconds(SaveData.MaxTime).ToString("mm:ss"));
 
             Music.PlayMenuMusic();
         }

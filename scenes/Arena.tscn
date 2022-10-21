@@ -221,9 +221,9 @@ script = ExtResource( 3 )
 
 [node name="ProgressBar" type="TextureProgress" parent="UI"]
 margin_left = 3.0
-margin_top = 7.0
+margin_top = 8.0
 margin_right = 75.0
-margin_bottom = 13.0
+margin_bottom = 14.0
 max_value = 1.0
 step = 0.0
 texture_under = ExtResource( 12 )
@@ -314,9 +314,10 @@ autowrap = true
 [node name="Corruption" type="Label" parent="UI"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -171.0
-margin_right = -113.0
-margin_bottom = 7.0
+margin_left = -150.0
+margin_top = 1.0
+margin_right = -92.0
+margin_bottom = 8.0
 theme = ExtResource( 4 )
 custom_colors/font_color = Color( 0.517647, 0.607843, 0.894118, 1 )
 text = "Robit Corruption"
@@ -331,10 +332,10 @@ theme = ExtResource( 4 )
 texture = ExtResource( 14 )
 
 [node name="Label" type="Label" parent="UI/HelpOverlay"]
-margin_left = 12.0
-margin_top = 24.0
-margin_right = 112.0
-margin_bottom = 49.0
+margin_left = 9.0
+margin_top = 29.0
+margin_right = 109.0
+margin_bottom = 54.0
 text = "The level of robit corruption. Plant Mend-blooms if it gets too high."
 autowrap = true
 
@@ -348,33 +349,33 @@ text = "The crystal. If it breaks, you lose.
 autowrap = true
 
 [node name="Label2" type="Label" parent="UI/HelpOverlay"]
-margin_left = 260.0
+margin_left = 218.0
 margin_top = 138.0
-margin_right = 340.0
+margin_right = 298.0
 margin_bottom = 180.0
 text = "This is your money (acorns). Buy stuff with them to defend the crystal!"
 autowrap = true
 
 [node name="Label3" type="Label" parent="UI/HelpOverlay"]
-margin_left = 238.0
+margin_left = 208.0
 margin_top = 73.0
-margin_right = 339.0
+margin_right = 309.0
 margin_bottom = 88.0
 text = "Purchase stuff from the shop by clicking on the buttons."
 autowrap = true
 
 [node name="Label5" type="Label" parent="UI/HelpOverlay"]
-margin_left = 199.0
+margin_left = 176.0
 margin_top = 18.0
-margin_right = 300.0
-margin_bottom = 33.0
+margin_right = 277.0
+margin_bottom = 42.0
 text = "This is how long you've been defending the forest for. It will get harder as time goes on."
 autowrap = true
 
 [node name="Label4" type="RichTextLabel" parent="UI/HelpOverlay"]
-margin_left = 13.0
+margin_left = 3.0
 margin_top = 108.0
-margin_right = 188.0
+margin_right = 178.0
 margin_bottom = 178.0
 mouse_filter = 2
 size_flags_horizontal = 3
@@ -397,10 +398,10 @@ Hit  to pause!"
 scroll_active = false
 
 [node name="H" type="RichTextLabel" parent="UI/HelpOverlay"]
-margin_left = 131.0
-margin_top = 99.0
-margin_right = 232.0
-margin_bottom = 114.0
+margin_left = 110.0
+margin_top = 105.0
+margin_right = 211.0
+margin_bottom = 124.0
 bbcode_enabled = true
 bbcode_text = "[center][color=#ffd541]Press [img]res://textures/control_img_h.png[/img] to hide this menu and hold it to show it again!"
 text = "Press  to hide this menu and hold it to show it again!"
@@ -412,8 +413,8 @@ pause_mode = 2
 
 [node name="GrassBG" type="Sprite" parent="."]
 modulate = Color( 0.101961, 0.478431, 0.243137, 1 )
-position = Vector2( 180, 90 )
-scale = Vector2( 180, 90 )
+position = Vector2( 160, 90 )
+scale = Vector2( 160, 90 )
 z_index = -4096
 texture = ExtResource( 1 )
 
@@ -431,17 +432,16 @@ wait_time = 0.5
 autostart = true
 
 [node name="Crystal" parent="." instance=ExtResource( 9 )]
-position = Vector2( 180, 58 )
+position = Vector2( 160, 66 )
 
 [node name="EveryTenSeconds" type="Timer" parent="."]
 wait_time = 10.0
 
 [node name="Bounds" type="StaticBody2D" parent="."]
-visible = false
 collision_layer = 5
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bounds"]
-polygon = PoolVector2Array( 0, 0, 0, 180, 360, 180, 360, 0, 0, 0, 0, -11, 371, -10, 372, 192, -13, 193, -13, -11, 0, -11 )
+polygon = PoolVector2Array( 0, 0, 0, 180, 320, 180, 320, 0, 0, 0, 1, -19, 342, -17, 337, 195, -19, 202, -19, -13, 1, -19 )
 
 [node name="GameOverPlayer" type="AnimationPlayer" parent="."]
 autoplay = "RESET"
@@ -450,7 +450,7 @@ anims/RESET = SubResource( 4 )
 
 [node name="Ashes" type="Sprite" parent="."]
 visible = false
-position = Vector2( 180, 88 )
+position = Vector2( 160, 90 )
 z_index = 88
 texture = ExtResource( 15 )
 offset = Vector2( 0, 2 )
@@ -461,10 +461,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 97.0
+margin_left = 75.0
 margin_top = 13.0
-margin_right = 267.0
-margin_bottom = 77.0
+margin_right = 245.0
+margin_bottom = 136.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -482,6 +482,9 @@ The sacred crystal has shattered and the forest has been overtaken by robit corr
 You made it to: "
 scroll_active = false
 
-[node name="Button" type="Button" parent="GameOver"]
-margin_right = 12.0
-margin_bottom = 20.0
+[node name="EndButton" type="Button" parent="GameOver"]
+margin_left = 70.0
+margin_top = 96.0
+margin_right = 99.0
+margin_bottom = 111.0
+text = "Goodbye"

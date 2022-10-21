@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://MainTheme.tres" type="Theme" id=1]
 [ext_resource path="res://scenes/menus/MainMenu.cs" type="Script" id=2]
 [ext_resource path="res://scenes/menus/Settings.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/MyButton.cs" type="Script" id=4]
+[ext_resource path="res://textures/logo.png" type="Texture" id=5]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -23,16 +24,32 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 alignment = 1
 
+[node name="HSeparator" type="HSeparator" parent="Main"]
+margin_right = 320.0
+margin_bottom = 10.0
+custom_constants/separation = 10
+custom_styles/separator = SubResource( 1 )
+
 [node name="TextureRect" type="TextureRect" parent="Main"]
-margin_right = 360.0
-margin_bottom = 100.0
-rect_min_size = Vector2( 0, 100 )
+margin_left = 70.0
+margin_top = 14.0
+margin_right = 250.0
+margin_bottom = 96.0
+size_flags_horizontal = 4
+texture = ExtResource( 5 )
+
+[node name="HSeparator2" type="HSeparator" parent="Main"]
+margin_top = 100.0
+margin_right = 320.0
+margin_bottom = 110.0
+custom_constants/separation = 10
+custom_styles/separator = SubResource( 1 )
 
 [node name="Play" type="Button" parent="Main"]
-margin_left = 140.0
-margin_top = 104.0
-margin_right = 220.0
-margin_bottom = 116.0
+margin_left = 120.0
+margin_top = 114.0
+margin_right = 200.0
+margin_bottom = 126.0
 rect_min_size = Vector2( 80, 0 )
 size_flags_horizontal = 6
 size_flags_vertical = 2
@@ -40,10 +57,10 @@ text = "Play!"
 script = ExtResource( 4 )
 
 [node name="Settings" type="Button" parent="Main"]
-margin_left = 140.0
-margin_top = 144.0
-margin_right = 220.0
-margin_bottom = 156.0
+margin_left = 120.0
+margin_top = 149.0
+margin_right = 200.0
+margin_bottom = 161.0
 rect_min_size = Vector2( 80, 0 )
 size_flags_horizontal = 6
 size_flags_vertical = 2
@@ -88,3 +105,26 @@ size_flags_horizontal = 6
 size_flags_vertical = 2
 text = "Back"
 script = ExtResource( 4 )
+
+[node name="Highscore" type="Label" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -166.0
+margin_top = 3.0
+margin_right = -3.0
+margin_bottom = 9.0
+custom_colors/font_color = Color( 1, 0.835294, 0.254902, 1 )
+text = "Personal Best: 00:00"
+align = 2
+
+[node name="Credit" type="Label" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -166.0
+margin_top = 152.0
+margin_right = -3.0
+margin_bottom = 176.0
+text = "By Connor Magson
+For Ludum Dare 51
+Theme: Every 10 Seconds"
+align = 2

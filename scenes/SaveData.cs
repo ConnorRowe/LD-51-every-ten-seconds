@@ -11,7 +11,7 @@ namespace TenSecs
         public static float MusicVol => (float)Save.GetValue("Settings", "music_vol");
         public static float SFXVol => (float)Save.GetValue("Settings", "sfx_vol");
         public static bool Fullscreen => (bool)Save.GetValue("Settings", "fullscreen");
-        public static int MaxTime => (int)Save.GetValue("Settings", "max_time");
+        public static float MaxTime => (float)Save.GetValue("Settings", "max_time");
         public static Godot.Collections.Dictionary KeyBinds => (Godot.Collections.Dictionary)Save.GetValue("Settings", "keybinds");
 
         static SaveData()
@@ -29,7 +29,7 @@ namespace TenSecs
                 Save.SetValue("Settings", "music_vol", .5f);
                 Save.SetValue("Settings", "sfx_vol", .5f);
                 Save.SetValue("Settings", "fullscreen", false);
-                Save.SetValue("Settings", "max_time", 0);
+                Save.SetValue("Settings", "max_time", 0f);
                 SaveKeybinds();
                 Save.Save(filePath);
                 Save.Load(filePath);
